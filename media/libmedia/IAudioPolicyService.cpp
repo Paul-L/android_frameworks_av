@@ -190,7 +190,7 @@ public:
                                     int audioSession,
                                     audio_input_clients *inputClientId)
 #else
-                                     int audioSession)
+                                    int audioSession)
 #endif
     {
         Parcel data, reply;
@@ -464,10 +464,6 @@ status_t BnAudioPolicyService::onTransact(
             uint32_t samplingRate = data.readInt32();
             audio_format_t format = (audio_format_t) data.readInt32();
             audio_channel_mask_t channelMask = data.readInt32();
-#ifdef STE_AUDIO
-            audio_input_clients *inputClientId =
-                    (audio_input_clients*) data.readIntPtr();
-#endif
             audio_output_flags_t flags =
                     static_cast <audio_output_flags_t>(data.readInt32());
             bool hasOffloadInfo = data.readInt32() != 0;
@@ -520,6 +516,10 @@ status_t BnAudioPolicyService::onTransact(
             uint32_t samplingRate = data.readInt32();
             audio_format_t format = (audio_format_t) data.readInt32();
             audio_channel_mask_t channelMask = data.readInt32();
+#ifdef STE_AUDIO
+            audio_input_clients *inputClientId =
+                    (audio_input_clients*) data.readIntPtr();
+#endif
             int audioSession = data.readInt32();
             audio_io_handle_t input = getInput(inputSource,
                                                samplingRate,
@@ -529,7 +529,7 @@ status_t BnAudioPolicyService::onTransact(
                                                audioSession,
                                                inputClientId);
 #else
-                                                audioSession);
+                                               audioSession);
 #endif
             reply->writeInt32(static_cast <int>(input));
             return NO_ERROR;

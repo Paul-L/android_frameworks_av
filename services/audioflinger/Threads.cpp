@@ -3570,7 +3570,6 @@ bool AudioFlinger::MixerThread::checkForNewParameters_l()
         }
 #endif
 
-
         if (status == NO_ERROR) {
             status = mOutput->stream->common.set_parameters(&mOutput->stream->common,
                                                     keyValuePair.string());

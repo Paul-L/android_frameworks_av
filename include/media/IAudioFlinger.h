@@ -193,13 +193,13 @@ public:
     virtual status_t closeInput(audio_io_handle_t input,
                                 audio_input_clients *inputClientId = NULL) = 0;
 #else
-
     virtual audio_io_handle_t openInput(audio_module_handle_t module,
                                         audio_devices_t *pDevices,
                                         uint32_t *pSamplingRate,
                                         audio_format_t *pFormat,
                                         audio_channel_mask_t *pChannelMask) = 0;
     virtual status_t closeInput(audio_io_handle_t input) = 0;
+#endif
 
     virtual status_t setStreamOutput(audio_stream_type_t stream, audio_io_handle_t output) = 0;
 

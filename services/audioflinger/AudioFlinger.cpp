@@ -1968,7 +1968,7 @@ audio_io_handle_t AudioFlinger::openOutput(audio_module_handle_t module,
 #ifdef STE_AUDIO
         if ( mPrimaryHardwareDev == NULL ) {
 #else
-        if ((mPrimaryHardwareDev == NULL) && (flags & AUDIO_OUTPUT_FLAG_PRIMARY)) {
+         if ((mPrimaryHardwareDev == NULL) && (flags & AUDIO_OUTPUT_FLAG_PRIMARY)) {
 #endif
             ALOGI("Using module %d has the primary audio interface", module);
             mPrimaryHardwareDev = outHwDev;
@@ -2232,6 +2232,7 @@ audio_io_handle_t AudioFlinger::openInput(audio_module_handle_t module,
     } else if (inStream == NULL && status == BAD_VALUE &&
 #else
     if (status == BAD_VALUE &&
+#endif
         reqFormat == config.format && config.format == AUDIO_FORMAT_PCM_16_BIT &&
         (config.sample_rate <= 2 * reqSamplingRate) &&
         (getInputChannelCount(config.channel_mask) <= FCC_2) && (getInputChannelCount(reqChannels) <= FCC_2)) {
@@ -2338,7 +2339,6 @@ audio_io_handle_t AudioFlinger::openInput(audio_module_handle_t module,
         }
 #endif
 
-
         // notify client processes of the new input creation
         thread->audioConfigChanged_l(AudioSystem::INPUT_OPENED);
         return id;
@@ -2347,6 +2347,40 @@ audio_io_handle_t AudioFlinger::openInput(audio_module_handle_t module,
     return 0;
 }
 
+#ifdef STE_AUDIO
+status_t AudioFlinger::closeInput(audio_io_handle_t input, audio_input_clients *inputClientId)
+{
+    // keep strong reference on the record thread so that
+    // it is not destroyed while exit() is executed
+    Mutex::Autolock _l(mLock);
+    AudioStreamIn* stream = (AudioStreamIn*)input;
+    audio_input_clients clientId = (audio_input_clients) *inputClientId;
+    sp <RecordThread> thread;
+    thread = checkRecordThread_l(input);
+    if (thread != NULL) {
+        stream = thread->getInput();
+    }
+    if (inputClientId == NULL) {
+        if (thread == NULL) {
+            return BAD_VALUE;
+        }
+        ALOGV("closeInput() %d", input);
+        void *param2 = 0;
+        audioConfigChanged_l(AudioSystem::INPUT_CLOSED, input, param2);
+        mRecordThreads.removeItem(input);
+    }
+
+    AudioStreamIn *in = (AudioStreamIn *)stream;
+    in->hwDev()->close_input_stream(in->hwDev(), in->stream);
+    delete in;
+
+    if (thread != NULL) {
+        thread->exit();
+    }
+
+    return NO_ERROR;
+}
+#else
 status_t AudioFlinger::closeInput(audio_io_handle_t input)
 {
     return closeInput_nonvirtual(input);

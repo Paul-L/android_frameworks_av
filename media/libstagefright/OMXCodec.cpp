@@ -323,7 +323,7 @@ void OMXCodec::findMatchingCodecs(
 }
 
 #ifdef STE_HARDWARE
-+uint32_t OMXCodec::OmxToHALFormat(OMX_COLOR_FORMATTYPE omxValue) {
+uint32_t OMXCodec::OmxToHALFormat(OMX_COLOR_FORMATTYPE omxValue) {
     switch (omxValue) {
         case OMX_STE_COLOR_FormatYUV420PackedSemiPlanarMB:
             return HAL_PIXEL_FORMAT_YCBCR42XMBN;

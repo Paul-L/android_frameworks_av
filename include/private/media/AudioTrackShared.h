@@ -132,6 +132,8 @@ private:
 
 public:
 
+                uint32_t    sampleRate;
+
     volatile    int32_t     mFlags;         // combinations of CBLK_*
 
                 // Cache line boundary (32 bytes)

@@ -225,12 +225,6 @@ audio_io_handle_t AudioPolicyService::getOutput(audio_stream_type_t stream,
                                     uint32_t samplingRate,
                                     audio_format_t format,
                                     audio_channel_mask_t channelMask,
-#ifdef STE_AUDIO
-                                    int audioSession,
-                                    audio_input_clients *inputClientId)
-#else
-                                    int audioSession)
-#endif
                                     audio_output_flags_t flags,
                                     const audio_offload_info_t *offloadInfo)
 {
@@ -296,7 +290,13 @@ audio_io_handle_t AudioPolicyService::getInput(audio_source_t inputSource,
                                     uint32_t samplingRate,
                                     audio_format_t format,
                                     audio_channel_mask_t channelMask,
+#ifdef STE_AUDIO
+                                    int audioSession,
+                                    audio_input_clients *inputClientId)
+#else
                                     int audioSession)
+#endif
+
 {
     if (mpAudioPolicy == NULL) {
         return 0;
@@ -1166,14 +1166,13 @@ int AudioPolicyService::stopTone()
 int AudioPolicyService::setVoiceVolume(float volume, int delayMs)
 {
     return (int)mAudioCommandThread->voiceVolumeCommand(volume, delayMs);
+}
 #ifdef STE_HARDWARE
 bool AudioPolicyService::isOffloadSupported(const audio_offload_info_t& info)
 {
     return false;
 }
 #else
-}
-
 bool AudioPolicyService::isOffloadSupported(const audio_offload_info_t& info)
 {
 #ifdef HAVE_PRE_KITKAT_AUDIO_BLOB

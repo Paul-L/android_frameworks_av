@@ -227,7 +227,7 @@ public:
                                      audio_format_t format = AUDIO_FORMAT_DEFAULT,
                                      audio_channel_mask_t channelMask = AUDIO_CHANNEL_IN_MONO,
 #ifdef STE_AUDIO
-+                                    audio_in_acoustics_t acoustics = (audio_in_acoustics_t)0,
+                                    audio_in_acoustics_t acoustics = (audio_in_acoustics_t)0,
                                      int sessionId = 0,
                                      audio_input_clients *inputClientId = NULL);
 #else

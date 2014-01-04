@@ -233,9 +233,9 @@ public:
 
 #else
                                         audio_channel_mask_t *pChannelMask);
-#endif
 
     virtual status_t closeInput(audio_io_handle_t input);
+#endif
 
     virtual status_t setStreamOutput(audio_stream_type_t stream, audio_io_handle_t output);
 
